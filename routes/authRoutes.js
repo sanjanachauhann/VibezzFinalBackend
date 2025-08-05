@@ -26,10 +26,10 @@ router.post("/register", async (req, res) => {
 
 /* Login user with email */
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const { handle, password } = req.body;
 
   try {
-    const user = await User.findOne({ email }); // match by email
+    const user = await User.findOne({ handle }); // match by email
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
