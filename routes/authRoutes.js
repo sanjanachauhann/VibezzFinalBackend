@@ -45,25 +45,36 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: "Server error", details: err.message });
   }
 });
+
+//Update the user profile
+
 router.post("/updateProfile", async (req, res) => {
   try {
-    const { userId, links } = req.body;
+    const { userId, name, handle, email, phone, links, accountStatus } =
+      req.body;
 
-    if (!userId || !Array.isArray(links)) {
-      return res.status(400).json({ message: "Invalid request" });
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { links }, // replaces links array entirely
-      { new: true } // return updated doc
-    );
+    const updateFields = {};
+
+    if (name !== undefined) updateFields.name = name;
+    if (handle !== undefined) updateFields.handle = handle;
+    if (email !== undefined) updateFields.email = email;
+    if (phone !== undefined) updateFields.phone = phone;
+    if (Array.isArray(links)) updateFields.links = links;
+    if (accountStatus !== undefined) updateFields.accountStatus = accountStatus;
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updateFields, {
+      new: true,
+    });
 
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json(updatedUser); // Send updated user to frontend
+    res.status(200).json(updatedUser);
   } catch (error) {
     console.error("Update profile error:", error);
     res.status(500).json({ message: "Server error" });
