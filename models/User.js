@@ -32,6 +32,7 @@ const userSchema = new mongoose.Schema({
   },
   links: {
     type: Array,
+    default: [],
   },
 });
 
