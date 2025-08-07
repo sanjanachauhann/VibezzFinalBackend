@@ -30,6 +30,9 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  links: {
+    type: Array,
+  },
 });
 
 export default mongoose.model("User", userSchema, "users_details");
