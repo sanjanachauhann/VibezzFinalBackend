@@ -45,5 +45,29 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: "Server error", details: err.message });
   }
 });
+router.post("/updateProfile", async (req, res) => {
+  try {
+    const { userId, links } = req.body;
+
+    if (!userId || !Array.isArray(links)) {
+      return res.status(400).json({ message: "Invalid request" });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { links }, // replaces links array entirely
+      { new: true } // return updated doc
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(updatedUser); // Send updated user to frontend
+  } catch (error) {
+    console.error("Update profile error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 export default router;
